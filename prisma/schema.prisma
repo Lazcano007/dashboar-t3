@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {                                
+  id        String   @id @default(uuid())           // primäranyckelfält uniknyckel som varje rad i databasen måste ha.
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+
+  posts     Post[] 
+}
+
+model Post {
+  id        String   @id @default(uuid())  //"@default(uuid())" = Generera automatiskt ett unikt UUID. varje post ska ha ett unik id."
+  content   String
+  createdAt DateTime @default(now())
+
+  authorId  String   // foreign key
+  author    User     @relation(fields: [authorId], references: [id])  //"Kopplar posten till en specifik användare via foreign key-kolumnen authorId"
+}
